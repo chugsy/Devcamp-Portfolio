@@ -1,5 +1,6 @@
 class BlogsController < ApplicationController
-  before_action :set_blog, only: [:show, :edit, :update, :destroy]
+  before_action :set_blog, only: [:show, :edit, :update, :destroy, :toggle_status]
+  layout "blog"
 
   # GET /blogs
   # GET /blogs.json
@@ -32,7 +33,6 @@ class BlogsController < ApplicationController
     respond_to do |format|
       if @blog.save
         format.html { redirect_to @blog, notice: 'Your post is now live.' }
-        
       else
         format.html { render :new }
       end
@@ -60,7 +60,7 @@ class BlogsController < ApplicationController
       format.json { head :no_content }
     end
   end
-  
+
   def toggle_status
     if @blog.draft?
       @blog.published!
@@ -79,6 +79,6 @@ class BlogsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def blog_params
-      params.require(:blog)
+      params.require(:blog).permit(:title, :body)
     end
 end
