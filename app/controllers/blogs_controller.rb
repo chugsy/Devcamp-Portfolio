@@ -1,7 +1,7 @@
 class BlogsController < ApplicationController
   before_action :set_blog, only: [:show, :edit, :update, :destroy, :toggle_status]
   layout "blog"
-  access all: [:show, :index], user: {except: [:destroy, :new, :create, :update, :edit]}, site_admin: :all
+  access all: [:show, :index], user: {except: [:destroy, :new, :create, :update, :edit, :toggle_status]}, site_admin: :all
 
   # GET /blogs
   # GET /blogs.json
@@ -13,6 +13,9 @@ class BlogsController < ApplicationController
   # GET /blogs/1
   # GET /blogs/1.json
   def show
+    @blog = Blog.includes(:comments).friendly.find(params[:id])
+    @comment = Comment.new
+
     @page_title = @blog.title
     @seo_keywords = @blog.body
   end
@@ -64,8 +67,8 @@ class BlogsController < ApplicationController
 
   def toggle_status
     if @blog.draft?
-      @blog.pusblished!
-    elsif @blog.pusblished?
+      @blog.published!
+    elsif @blog.published?
       @blog.draft!
     end
         
